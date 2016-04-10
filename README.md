@@ -38,13 +38,13 @@ Example Playbook
 ```
 - hosts: dbservers
   roles:
-    - postgres
+  - postgres
   vars:
-    - postgres_version: 9.4
-    - postgres_databases:
-      - database: mydb
-        username: myuser
-        password: secret
+  - postgres_version: 9.4
+  - postgres_databases:
+    - database: mydb
+      username: myuser
+      password: secret
 ```
 
 License
