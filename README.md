@@ -30,11 +30,12 @@ postgres_databases: a list of mappings such as this:
 Dependencies
 ------------
 
-None
+None.
 
 Example Playbook
 ----------------
 
+```
 - hosts: dbservers
   roles:
     - postgres
@@ -44,6 +45,7 @@ Example Playbook
       - database: mydb
         username: myuser
         password: secret
+```
 
 License
 -------
