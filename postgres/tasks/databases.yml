@@ -1,0 +1,40 @@
+- name: Postgres service is enabled and started
+  service:
+    name: postgresql
+    state: started
+    enabled: true
+
+- name: pg_hba.conf is configured
+  lineinfile:
+    dest: /etc/postgresql/{{ postgres_version }}/main/pg_hba.conf
+    line: host    {{ item.database }}   {{ item.username }}   0.0.0.0/0 md5
+  notify: restart postgres
+  with_items: "{{ postgres_databases }}"
+
+- name: Postgres users are present
+  postgresql_user:
+    name: "{{ item.username }}"
+    state: present
+    password: "{{ item.password }}"
+  become: True
+  become_user: postgres
+  with_items: "{{ postgres_databases }}"
+
+- name: Postgres databases are present
+  postgresql_db:
+    name: "{{ item.database }}"
+    encoding: 'UTF-8'
+    template: 'template0'
+    state: present
+    owner: "{{ item.username }}"
+  become: True
+  become_user: postgres
+  with_items: "{{ postgres_databases }}"
+
+- name: Daily backup cronjobs are present
+  cron:
+    user: "postgres"
+    name: "Postgres backup for database {{ item.database }}"
+    special_time: daily
+    job: "pg_dump -b -d {{ item.database }} > /var/local/backups/{{ item.database }}.sql"
+  with_items: "{{ postgres_databases }}"
