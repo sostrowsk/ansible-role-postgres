@@ -1,2 +1,30 @@
 ---
-# tasks file for postgres
+- name: Required packages are installed
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+  - python-psycopg2
+  - postgresql-{{ postgres_version }}
+
+- name: PostgreSQL cluster main is present
+  command: pg_createcluster {{ postgres_version }} main
+  args:
+    creates: /var/lib/postgresql/{{ postgres_version }}/main
+
+- name: PostgreSQL is configured to listen on 0.0.0.0
+  lineinfile:
+    dest: /etc/postgresql/{{ postgres_version }}/main/postgresql.conf
+    regexp: "^listen_addresses = "
+    line: "listen_addresses = '*'"
+  notify: restart postgres
+
+- name: Backup directory is present
+  file:
+    name: /var/local/backups
+    state: directory
+    owner: root
+    group: postgres
+    mode: 0770
+
+- include: databases.yml
