@@ -17,7 +17,7 @@
     dest: /etc/postgresql/{{ postgres_version }}/main/postgresql.conf
     regexp: "^listen_addresses = "
     line: "listen_addresses = '*'"
-  notify: restart postgres
+  notify: Reload postgres
 
 - name: Backup directory is present
   file:
