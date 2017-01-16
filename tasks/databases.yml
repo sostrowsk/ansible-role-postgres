@@ -8,7 +8,7 @@
   lineinfile:
     dest: /etc/postgresql/{{ postgres_version }}/main/pg_hba.conf
     line: host    {{ item.database }}   {{ item.username }}   0.0.0.0/0 md5
-  notify: restart postgres
+  notify: Reload postgres
   with_items: "{{ postgres_databases }}"
 
 - name: Postgres users are present
