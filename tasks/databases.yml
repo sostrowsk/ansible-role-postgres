@@ -31,10 +31,21 @@
   become_user: postgres
   with_items: "{{ postgres_databases }}"
 
-- name: Daily backup cronjobs are present
+- name: Hourly backup cronjobs are present
   cron:
     user: "postgres"
     name: "Postgres backup for database {{ item.database }}"
-    special_time: daily
-    job: "pg_dump -b -d {{ item.database }} > /var/local/backups/{{ item.database }}.sql"
+    special_time: hourly
+    job: "pg_dump -b -d {{ item.database }} | gzip > /var/local/backups/{{ item.database }}.`date +%Y-%m-%d-%H:%M:%S`.sql.gz"
   with_items: "{{ postgres_databases }}"
+
+- name: Install tmpreaper
+  apt:
+    pkg: tmpreaper
+    state: installed
+
+- name: Install tmpreaper cronjob
+  cron:
+    name: Postgres backup cleanup
+    job: "tmpreaper --mtime 90d /var/local/backups/"
+    special_time: daily
