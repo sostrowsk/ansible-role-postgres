@@ -44,6 +44,12 @@
     pkg: tmpreaper
     state: installed
 
+- name: Disable tmpreaper warning
+  lineinfile:
+    dest: /etc/tmpreaper.conf
+    line: SHOWARNING=false
+    regexp: ^SHOWARNING=
+
 - name: Install tmpreaper cronjob
   cron:
     name: Postgres backup cleanup
