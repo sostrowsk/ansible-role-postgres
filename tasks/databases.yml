@@ -47,8 +47,8 @@
 - name: Disable tmpreaper warning
   lineinfile:
     dest: /etc/tmpreaper.conf
-    line: SHOWARNING=false
-    regexp: ^SHOWARNING=
+    line: SHOWWARNING=false
+    regexp: ^SHOWWARNING=
 
 - name: Install tmpreaper cronjob
   cron:
