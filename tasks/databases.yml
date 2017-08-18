@@ -46,6 +46,7 @@
     hour: 18
     minute: 0
     user: postgres
+  with_items: "{{ postgres_databases }}"
 
 - name: Hourly backup cronjobs are present
   cron:
