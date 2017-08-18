@@ -27,4 +27,29 @@
     group: postgres
     mode: 0770
 
+- name: Install backup cronjob for all databases
+  cron:
+    name: Postgres backup (all databases)
+    job: "/usr/bin/pg_dumpall | gzip > /var/local/backups/pg_dumpall.$(date +%Y-%m-%d-%H:%M:%S).sql.gz\n"
+    hour: 17
+    minute: 30
+    user: postgres
+
+- name: Install tmpreaper
+  apt:
+    pkg: tmpreaper
+    state: installed
+
+- name: Disable tmpreaper warning
+  lineinfile:
+    dest: /etc/tmpreaper.conf
+    line: SHOWWARNING=false
+    regexp: ^SHOWWARNING=
+
+- name: Install tmpreaper cronjob
+  cron:
+    name: Postgres backup cleanup
+    job: "/usr/sbin/tmpreaper --mtime 90d /var/local/backups/"
+    special_time: daily
+
 - include: databases.yml

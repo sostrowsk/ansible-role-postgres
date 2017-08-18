@@ -31,6 +31,22 @@
   become_user: postgres
   with_items: "{{ postgres_databases }}"
 
+- name: Install backup script
+  copy:
+    content: "#!/bin/sh\npg_dump --blobs --clean | gzip > /var/local/backups/$1.$(date +%Y-%m-%d-%H:%M:%S).sql.gz\n"
+    dest: /usr/local/sbin/awesto-pgbackup.sh
+    owner: postgres
+    group: postgres
+    mode: 0700
+
+- name: Install backup cronjob
+  cron:
+    name: "Postgres backup ({{ item.database }})"
+    job: "/usr/local/sbin/pgbackup.sh {{ item.database }}"
+    hour: 18
+    minute: 0
+    user: postgres
+
 - name: Hourly backup cronjobs are present
   cron:
     user: "postgres"
@@ -38,20 +54,3 @@
     special_time: hourly
     job: "pg_dump -b -d {{ item.database }} | gzip > /var/local/backups/{{ item.database }}.`date +%Y-%m-%d-%H:%M:%S`.sql.gz"
   with_items: "{{ postgres_databases }}"
-
-- name: Install tmpreaper
-  apt:
-    pkg: tmpreaper
-    state: installed
-
-- name: Disable tmpreaper warning
-  lineinfile:
-    dest: /etc/tmpreaper.conf
-    line: SHOWWARNING=false
-    regexp: ^SHOWWARNING=
-
-- name: Install tmpreaper cronjob
-  cron:
-    name: Postgres backup cleanup
-    job: "/usr/sbin/tmpreaper --mtime 90d /var/local/backups/"
-    special_time: daily
