@@ -42,7 +42,7 @@
 - name: Install backup cronjob
   cron:
     name: "Postgres backup ({{ item.database }})"
-    job: "/usr/local/sbin/pgbackup.sh {{ item.database }}"
+    job: "/usr/local/sbin/awesto-pgbackup.sh {{ item.database }}"
     hour: 18
     minute: 0
     user: postgres
