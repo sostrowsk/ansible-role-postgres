@@ -27,11 +27,19 @@
     group: postgres
     mode: 0770
 
+- name: Install backup script for all databases
+  copy:
+    content: "#!/bin/sh\npg_dumpall | gzip > /var/local/backups/pg_dumpall.$(date +%Y-%m-%d-%H:%M:%S).sql.gz\n"
+    dest: /usr/local/sbin/awesto-pgbackupall.sh
+    owner: postgres
+    group: postgres
+    mode: 0700
+
 - name: Install backup cronjob for all databases
   cron:
     name: Postgres backup (all databases)
-    job: "/usr/bin/pg_dumpall | gzip > /var/local/backups/pg_dumpall.$(date +%Y-%m-%d-%H:%M:%S).sql.gz\n"
-    hour: 17
+    job: "/usr/local/sbin/awesto-pgbackupall.sh"
+    hour: 1
     minute: 30
     user: postgres
 
