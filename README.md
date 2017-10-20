@@ -12,13 +12,13 @@ None.
 Role Variables
 --------------
 
-postgres_version: the version of PostgreSQL to use, e.g:
+`postgres_version`: the version of PostgreSQL to use.
 
-```
-    postgres_version: 9.4
-```
+`postgres_backup_retention_time`: how long to keep backups in
+`/var/local/backups`.  Specify the value in tmpreaper syntax. Defaults to `'30d'`.
 
-postgres_databases: a list of mappings such as this:
+
+`postgres_databases`: a list of mappings such as this:
 
 ```
     - postgres_databases:
@@ -40,11 +40,12 @@ Example Playbook
   roles:
   - postgres
   vars:
-  - postgres_version: 9.4
+  - postgres_version: 9.6
   - postgres_databases:
     - database: mydb
       username: myuser
       password: secret
+  - postgres_backup_retention_time: 60d
 ```
 
 License

@@ -57,7 +57,7 @@
 - name: Install tmpreaper cronjob
   cron:
     name: Postgres backup cleanup
-    job: "/usr/sbin/tmpreaper --mtime 90d /var/local/backups/"
+    job: "/usr/sbin/tmpreaper --mtime {{ postgres_backup_retention_time|default('30d') }} /var/local/backups/"
     special_time: daily
 
 - include: databases.yml
