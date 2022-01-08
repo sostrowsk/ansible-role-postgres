@@ -4,7 +4,7 @@
     name: "{{ item }}"
     state: latest
   with_items:
-  - python-psycopg2
+  - python3-psycopg2
   - postgresql-{{ postgres_version }}
 
 - name: PostgreSQL cluster main is present
