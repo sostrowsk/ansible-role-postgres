@@ -47,7 +47,7 @@
 - name: Install tmpreaper
   apt:
     pkg: tmpreaper
-    state: installed
+    state: present
 
 - name: Disable tmpreaper warning
   lineinfile:
