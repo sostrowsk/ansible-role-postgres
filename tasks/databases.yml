@@ -6,7 +6,7 @@
 
 - name: pg_hba.conf is configured
   lineinfile:
-    dest: /etc/postgresql/{{ postgres_version }}/main/pg_hba.conf
+    dest: /etc/postgresql/13/main/pg_hba.conf
     line: host    {{ item.database }}   {{ item.username }}   0.0.0.0/0 md5
   notify: Reload postgres
   with_items: "{{ postgres_databases }}"

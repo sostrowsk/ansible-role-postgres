@@ -1,21 +1,18 @@
 ---
 - name: Required packages are installed
   apt:
-    name: "{{ item }}"
-    state: latest
+    name: ["python3-psycopg2", "postgresql-13"]
+    state: present
     update_cache: yes
-  with_items:
-  - python3-psycopg2
-  - postgresql-{{ postgres_version }}
 
 - name: PostgreSQL cluster main is present
-  command: pg_createcluster {{ postgres_version }} main
+  command: pg_createcluster 13 main
   args:
-    creates: /var/lib/postgresql/{{ postgres_version }}/main
+    creates: /var/lib/postgresql/13/main
 
 - name: PostgreSQL is configured to listen on 0.0.0.0
   lineinfile:
-    dest: /etc/postgresql/{{ postgres_version }}/main/postgresql.conf
+    dest: /etc/postgresql/13/main/postgresql.conf
     regexp: "^listen_addresses = "
     line: "listen_addresses = '*'"
   notify: Restart postgres
