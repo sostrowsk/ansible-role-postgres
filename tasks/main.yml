@@ -3,7 +3,6 @@
   apt:
     name: ["python3-psycopg2", "postgresql-13"]
     state: present
-    update_cache: yes
 
 - name: PostgreSQL cluster main is present
   command: pg_createcluster 13 main
